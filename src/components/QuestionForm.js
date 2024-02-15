@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { json } from "react-router-dom";
 
 function QuestionForm(props) {
   const [formData, setFormData] = useState({
@@ -11,15 +12,31 @@ function QuestionForm(props) {
   });
 
   function handleChange(event) {
+    const { name, value } = event.target
     setFormData({
       ...formData,
-      [event.target.name]: event.target.value,
+      [name]: value
     });
   }
 
   function handleSubmit(event) {
+    // console.log(formData);
     event.preventDefault();
-    console.log(formData);
+    const dataLoad = {
+      prompt: formData.prompt,
+      answers: [formData.answer1, formData.answer2, formData.answer3, formData.answer4],
+      correctIndex: formData.correctIndex
+    }
+
+    fetch("http://localhost:4000/questions", {
+      method: "POST",
+      headers: {"Content-TYpe": "application/json" },
+      body: JSON.stringify(dataLoad),
+    })
+    .then((resp) => resp.json())
+    .then(addQuestion => console.log(addQuestion))
+    
+   
   }
 
   return (
